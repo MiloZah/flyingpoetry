@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Michał Fostowicz Zahorski</title>
+  <meta name="Keywords" content="Michal Fostowicz Zahorski,malarstwo,obrazy,poezja,sztuka,tlumaczenia,teksty,William Blake">
+  <meta name="Description" content="Michal Fostowicz Zahorski,malarstwo,sztuka,poezja,literatura,tlumaczenia,tomiki">
+  <meta http-equiv="imagetoolbar" content="no">
+  <style>
+    body {
+      cursor: url(http://myurl.com), auto;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      overflow: hidden;
+      background: #000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    span {
+      color: #ffffff;
+      font-family: Verdana, sans-serif;
+      font-size: 8pt;
+      font-weight: normal;
+      position: absolute;
+      white-space: nowrap;
+    }
+    a {
+      text-decoration: none;
+      color: #FF8000;
+    }
+    .MILO {
+      background: #111111;
+      border: #333 solid 1px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 305px;
+      height: 468px;
+      padding: 10px;
+      overflow: visible; /* Allow words to fly outside the container */
+    }
+    .class1 a:link, .class1 a:visited, .class1 a:active {
+      text-decoration: none;
+    }
+    .class1 a:hover {
+      text-decoration: underline;
+      color: red;
+    }
+    .class2 a:link, .class2 a:visited, .class2 a:active {
+      text-decoration: underline overline;
+    }
+    .class2 a:hover {
+      text-decoration: underline;
+      color: green;
+    }
+  </style>
+  <script>
+    (function() {
+      window.onerror = new Function("return true");
+      document.onselectstart = new Function("return false");
+      screen.bufferDepth = 16;
+
+      //////////////
+      const SPEED = 200; // Original speed
+      const DELAY = 100; // Original delay
+      //////////////
+      const object = [];
+      let nx = 0;
+      let ny = 0;
+      let MILO;
+
+      function Pos(d) {
+        let z;
+        do {
+          z = Math.round((Math.random() * d) - d / 2);
+        } while (Math.abs(z) < d / 10);
+        return z;
+      }
+
+      function CObj(N, mot, initialX, initialY) {
+        const o = document.createElement("span");
+        o.innerHTML = mot;
+        MILO.appendChild(o);
+        this.N = N;
+        this.mv = false; // Start with no movement
+        this.obj = o.style;
+        this.initialX = initialX; // Store initial X position
+        this.initialY = initialY; // Store initial Y position
+        this.x = initialX; // Set initial X position
+        this.y = initialY; // Set initial Y position
+        this.obj.left = `${initialX}px`;
+        this.obj.top = `${initialY}px`;
+
+        // Calculate movement deltas
+        this.dt = -this.y / SPEED;
+        this.dl = -this.x / SPEED;
+
+        // Start animation on hover
+        o.onmouseover = () => {
+          if (!this.mv) {
+            this.mv = true;
+            this.x = Pos(nx);
+            this.y = Pos(ny);
+            this.dt = -this.y / SPEED;
+            this.dl = -this.x / SPEED;
+            this.animate();
+          }
+        };
+
+        // Animation logic
+        this.animate = function () {
+          this.obj.left = `${this.x += this.dl}px`;
+          this.obj.top = `${this.y += this.dt}px`;
+
+          if (Math.abs(this.x) > 1 || Math.abs(this.y) > 1) {
+            requestAnimationFrame(() => this.animate());
+          } else {
+            this.mv = false;
+            // Return to initial position
+            this.obj.left = `${this.initialX}px`;
+            this.obj.top = `${this.initialY}px`;
+          }
+        };
+      }
+
+      window.onload = function () {
+        nx = document.body.offsetWidth;
+        ny = document.body.offsetHeight;
+        MILO = document.getElementById("MILO");
+        let HTML = document.getElementById("dontscream").innerHTML; // Updated ID
+        const regexp = new RegExp("\n", "g");
+        HTML = HTML.replace(regexp, " ");
+        let x1 = 0;
+        let i = 0;
+        let m1 = "";
+        let currentX = 10; // Start with padding
+        let currentY = 10; // Start with padding
+        const lineHeight = 16; // Line height for spacing
+
+        while (true) {
+          const x2 = HTML.indexOf(" ", x1);
+          if (x2 === -1) break;
+          const m2 = HTML.substring(x1, x2);
+          let m0 = m1 + m2 + " ";
+          m1 = "";
+          x1 = x2 + 1;
+          if (m2.substring(0, 1) === "<") m1 = m0;
+          else if (m0 > " ") {
+            // Create a temporary span to measure the width of the word
+            const tempSpan = document.createElement("span");
+            tempSpan.innerHTML = m0;
+            tempSpan.style.position = "absolute";
+            tempSpan.style.visibility = "hidden";
+            document.body.appendChild(tempSpan);
+            const wordWidth = tempSpan.offsetWidth;
+            document.body.removeChild(tempSpan);
+
+            // Check if the word fits in the current line
+            if (currentX + wordWidth > MILO.offsetWidth - 20) { // 20 for padding
+              currentX = 10; // Reset X to start of the line
+              currentY += lineHeight; // Move to the next line
+            }
+
+            // Create the word object
+            object[i] = new CObj(i++, m0, currentX, currentY);
+            currentX += wordWidth + 5; // Add spacing between words
+          }
+        }
+
+        // Add a new paragraph for "A poet..."
+        const newParagraphText = "A poet creates images. But poetic images are immaterial. They are made of sounds and words. They find their fulfilment in the heart, in thoughts and in the memory. When the poet wants to transform his images into flesh, he has to become a painter. A poet is a painter. And conversely. A painter is a poet. This identity was announced by Guillaume Apollinaire. Michal Fostowicz is an artist corroborating this rule. His images are poetry materialized. But they are also something more. They are relations from inside the matter, they describe things coming into existence or transforming, seeking their proper shapes, seeking convenience, perhaps seeking a definition. Poetry finds its way into flesh. Flesh becomes poetry. Just like in a reciprocal Eucharist of beauty which can never find peace.";
+        const newParagraphWords = newParagraphText.split(" ");
+        currentX = 10; // Reset X for the new paragraph
+        currentY += lineHeight * 2; // Add extra space for the new paragraph
+
+        newParagraphWords.forEach((word) => {
+          const tempSpan = document.createElement("span");
+          tempSpan.innerHTML = word;
+          tempSpan.style.position = "absolute";
+          tempSpan.style.visibility = "hidden";
+          document.body.appendChild(tempSpan);
+          const wordWidth = tempSpan.offsetWidth;
+          document.body.removeChild(tempSpan);
+
+          if (currentX + wordWidth > MILO.offsetWidth - 20) {
+            currentX = 10;
+            currentY += lineHeight;
+          }
+
+          object[i] = new CObj(i++, word, currentX, currentY);
+          currentX += wordWidth + 5;
+        });
+      };
+    })();
+  </script>
+</head>
+<body>
+  <div id="MILO" class="MILO"></div>
+  <div id="dontscream" style="display: none"> <!-- Updated ID -->
+    Poeta kreuje obrazy. Ale obrazy poetyckie sa spoza materii. Sa z dzwieków
+    i slów.Spelniaja sie w sercu, w myslach i w pamieci. Gdy poeta chce
+    przemienic swe obrazy w cialo, musi stac sie malarzem.
+    Poeta jest malarzem. I odwrotnie. Malarz jest poeta. Te równosc obwiescil
+    Guillaume Apollinaire. Michal Fostowicz jest artysta w ramach tego prawa.
+    Jego obrazy sa zmaterializowana poezja. I jest w nich cos wiecej. Sa to
+    raporty z wnetrza materii; Jakis cial stajacych sie, lub przeksztalcajacych;
+    szukajacych dla siebie ksztaltów; jakiejs wygody; byc moze definicji.
+    Poezja trafia w cialo. Cialo staje sie poezja. Jak w zwrotnej eucharystii
+    piekna, które nigdy nie zaznaje spokoju.
+    <br><br>
+    A poet creates images. But poetic images are immaterial. They are made of sounds and words.
+    They find their fulfilment in the heart, in thoughts and in the memory.
+    When the poet wants to transform his images into flesh, he has
+    to become a painter.
+    A poet is a painter. And conversely. A painter is a poet. This identity was
+    announced by Guillaume Apollinaire. Michal Fostowicz is an artist corroborating
+    this rule. His images are poetry materialized. But they are also something more.
+    They are relations from inside the matter, they describe things coming into existence or transforming,
+    seeking their proper shapes, seeking convenience, perhaps seeking a definition.
+    Poetry finds its way into flesh. Flesh becomes poetry. Just like in a reciprocal Eucharist of beauty
+    which can never find peace.
+    <br><br>Henryk Waniek<br>
+    <br>November 1994<br>
+  </div>
+</body>
+</html>
