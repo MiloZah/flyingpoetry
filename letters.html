@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
-  <meta name="Keywords" content="">
-  <meta name="Description" content="">
+  <title>Michał Fostowicz Zahorski</title>
+  <meta name="Keywords" content="Michal Fostowicz Zahorski,malarstwo,obrazy,poezja,sztuka,tlumaczenia,teksty,William Blake">
+  <meta name="Description" content="Michal Fostowicz Zahorski,malarstwo,sztuka,poezja,literatura,tlumaczenia,tomiki">
   <meta http-equiv="imagetoolbar" content="no">
   <style>
     body {
@@ -45,21 +45,7 @@
       width: 305px;
       height: 468px;
       padding: 10px;
-      overflow: visible; /* Allow words to fly outside the container */
-    }
-    .class1 a:link, .class1 a:visited, .class1 a:active {
-      text-decoration: none;
-    }
-    .class1 a:hover {
-      text-decoration: underline;
-      color: red;
-    }
-    .class2 a:link, .class2 a:visited, .class2 a:active {
-      text-decoration: underline overline;
-    }
-    .class2 a:hover {
-      text-decoration: underline;
-      color: green;
+      overflow: visible; /* Allow words to fly outside the container during animation */
     }
   </style>
   <script>
@@ -135,7 +121,7 @@
         nx = document.body.offsetWidth;
         ny = document.body.offsetHeight;
         MILO = document.getElementById("MILO");
-        let HTML = document.getElementById("dontscream").innerHTML; // Updated ID
+        let HTML = document.getElementById("dontscream").innerHTML;
         const regexp = new RegExp("\n", "g");
         HTML = HTML.replace(regexp, " ");
         let x1 = 0;
@@ -169,42 +155,23 @@
               currentY += lineHeight; // Move to the next line
             }
 
+            // Ensure the word stays within the container's height
+            if (currentY + lineHeight > MILO.offsetHeight - 20) {
+              break; // Stop adding words if they exceed the container's height
+            }
+
             // Create the word object
             object[i] = new CObj(i++, m0, currentX, currentY);
             currentX += wordWidth + 5; // Add spacing between words
           }
         }
-
-        // Add a new paragraph for "A poet..."
-        const newParagraphText = "A poet creates images. But poetic images are immaterial. They are made of sounds and words. They find their fulfilment in the heart, in thoughts and in the memory. When the poet wants to transform his images into flesh, he has to become a painter. A poet is a painter. And conversely. A painter is a poet. This identity was announced by Guillaume Apollinaire. Michal Fostowicz is an artist corroborating this rule. His images are poetry materialized. But they are also something more. They are relations from inside the matter, they describe things coming into existence or transforming, seeking their proper shapes, seeking convenience, perhaps seeking a definition. Poetry finds its way into flesh. Flesh becomes poetry. Just like in a reciprocal Eucharist of beauty which can never find peace.";
-        const newParagraphWords = newParagraphText.split(" ");
-        currentX = 10; // Reset X for the new paragraph
-        currentY += lineHeight * 2; // Add extra space for the new paragraph
-
-        newParagraphWords.forEach((word) => {
-          const tempSpan = document.createElement("span");
-          tempSpan.innerHTML = word;
-          tempSpan.style.position = "absolute";
-          tempSpan.style.visibility = "hidden";
-          document.body.appendChild(tempSpan);
-          const wordWidth = tempSpan.offsetWidth;
-          document.body.removeChild(tempSpan);
-
-          if (currentX + wordWidth > MILO.offsetWidth - 20) {
-            currentX = 10;
-            currentY += lineHeight;
-          }
-
-          object[i] = new CObj(i++, word, currentX, currentY);
-          currentX += wordWidth + 5;
-        });
       };
     })();
   </script>
 </head>
 <body>
   <div id="MILO" class="MILO"></div>
-  <div id="dontscream" style="display: none"> <!-- Updated ID -->
+  <div id="dontscream" style="display: none">
     Poeta kreuje obrazy. Ale obrazy poetyckie sa spoza materii. Sa z dzwieków
     i slów.Spelniaja sie w sercu, w myslach i w pamieci. Gdy poeta chce
     przemienic swe obrazy w cialo, musi stac sie malarzem.
@@ -215,7 +182,8 @@
     szukajacych dla siebie ksztaltów; jakiejs wygody; byc moze definicji.
     Poezja trafia w cialo. Cialo staje sie poezja. Jak w zwrotnej eucharystii
     piekna, które nigdy nie zaznaje spokoju.
-    <br><br>
+    <br>
+
     A poet creates images. But poetic images are immaterial. They are made of sounds and words.
     They find their fulfilment in the heart, in thoughts and in the memory.
     When the poet wants to transform his images into flesh, he has
